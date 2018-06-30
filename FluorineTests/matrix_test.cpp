@@ -55,9 +55,9 @@ const float TOLERANCE = 1e-6f;
 			using Scalarf = flumath::Scalar<float>;
 			using Vectorf = flumath::Vector<float, 2>;
 
-			Vectorf v({ { 1.0f, 2.0f } });
-			Assert::AreEqual(1.0f, v[0][0], TOLERANCE, L"Mult test", LINE_INFO());
-			Assert::AreEqual(2.0f, v[0][1], TOLERANCE, L"Mult test", LINE_INFO());
+			Vectorf v({ 1.0f, 2.0f });
+			Assert::AreEqual(1.0f, v[0], TOLERANCE, L"Mult test", LINE_INFO());
+			Assert::AreEqual(2.0f, v[1], TOLERANCE, L"Mult test", LINE_INFO());
 		}
 
 		TEST_METHOD(TestVectorScalarMultiply1)
@@ -65,15 +65,15 @@ const float TOLERANCE = 1e-6f;
 			using Scalarf = flumath::Scalar<float>;
 			using Vectorf = flumath::Vector<float, 2>;
 
-			Vectorf v({ { 1.0f, 2.0f } });
+			Vectorf v({ 1.0f, 2.0f });
 			Vectorf result = v * 3.0f;
-			Assert::AreEqual(3.0f, result[0][0], TOLERANCE, L"Mult test", LINE_INFO());
-			Assert::AreEqual(6.0f, result[0][1], TOLERANCE, L"Mult test", LINE_INFO());
+			Assert::AreEqual(3.0f, result[0], TOLERANCE, L"Mult test", LINE_INFO());
+			Assert::AreEqual(6.0f, result[1], TOLERANCE, L"Mult test", LINE_INFO());
 
-			Vectorf v2({ { 3.0f, 1.0f } });
+			Vectorf v2({ 3.0f, 1.0f });
 			result = 2.0f * v2;
-			Assert::AreEqual(6.0f, result[0][0], TOLERANCE, L"Mult test", LINE_INFO());
-			Assert::AreEqual(2.0f, result[0][1], TOLERANCE, L"Mult test", LINE_INFO());
+			Assert::AreEqual(6.0f, result[0], TOLERANCE, L"Mult test", LINE_INFO());
+			Assert::AreEqual(2.0f, result[1], TOLERANCE, L"Mult test", LINE_INFO());
 		}
 
 		TEST_METHOD(TestWedgeProductVectorScalar1)
@@ -81,14 +81,14 @@ const float TOLERANCE = 1e-6f;
 			using Scalarf = flumath::Scalar<float>;
 			using Vectorf = flumath::Vector<float, 2>;
 
-			Vectorf v({ { 1.0f, 2.0f } });
+			Vectorf v({ 1.0f, 2.0f });
 			Vectorf result1 = 2.0f ^ v;
-			Assert::AreEqual(2.0f, result1[0][0], TOLERANCE, L"Vector-scalar left test", LINE_INFO());
-			Assert::AreEqual(4.0f, result1[0][1], TOLERANCE, L"Vector-scalar left test", LINE_INFO());
+			Assert::AreEqual(2.0f, result1[0], TOLERANCE, L"Vector-scalar left test", LINE_INFO());
+			Assert::AreEqual(4.0f, result1[1], TOLERANCE, L"Vector-scalar left test", LINE_INFO());
 
 			Vectorf result2 = v ^ 3.0f;
-			Assert::AreEqual(3.0f, result2[0][0], TOLERANCE, L"Vector-scalar right test", LINE_INFO());
-			Assert::AreEqual(6.0f, result2[0][1], TOLERANCE, L"Vector-scalar right test", LINE_INFO());
+			Assert::AreEqual(3.0f, result2[0], TOLERANCE, L"Vector-scalar right test", LINE_INFO());
+			Assert::AreEqual(6.0f, result2[1], TOLERANCE, L"Vector-scalar right test", LINE_INFO());
 		}
 
 		/*TEST_METHOD(TestWedgeProductVectorVector1)

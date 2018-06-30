@@ -51,7 +51,7 @@ struct n_choose_k {
 
 
 // MatrixBase type using CRTP to facilitate code sharing
-template <typename CRType, typename Type, size_t R, size_t C>
+template <typename CRType, typename Type, size_t R, size_t C, typename ColType>
 struct MatrixBase {
 
 	// zero the memory
@@ -60,6 +60,9 @@ struct MatrixBase {
 	MatrixBase() {}
 	MatrixBase(const Type input[R][C]) {
 		memcpy(mData, input, R*C * sizeof(Type));
+	}
+	~MatrixBase() {
+		std::cout << "is this getting called?" << std::endl;
 	}
 
 	typedef Type type;
@@ -100,27 +103,31 @@ struct MatrixBase {
 		return out;
 	}
 
-	typedef Type typeColumn[C];
+	/*todo: if these are never accessed through matrix base then they probably don't need to be virtual (better performance?)*/
+	virtual ColType& operator[](size_t rowIdx) = 0;
 
-	typeColumn& operator[](size_t rowIdx) {
-		return mData[rowIdx];
-	}
-
-	const typeColumn& operator[](size_t rowIdx) const {
-		return mData[rowIdx];
-	}
+	virtual const ColType& operator[](size_t rowIdx) const = 0;
 };
 
 // Matrix classes and partial specializations
 template <typename Type, size_t R, size_t C>
-struct Matrix : public MatrixBase<Matrix<Type, R, C>, Type, R, C> {
-	Matrix() : MatrixBase<Matrix<Type, R, C>, Type, R, C>() {}
-	Matrix(const Type(&input)[R][C]) : MatrixBase<Matrix<Type, R, C>, Type, R, C>(input) {
+struct Matrix : public MatrixBase<Matrix<Type, R, C>, Type, R, C, Type[C]> {
+	Matrix() : MatrixBase<Matrix<Type, R, C>, Type, R, C, Type[C]>() {}
+	Matrix(const Type(&input)[R][C]) : MatrixBase<Matrix<Type, R, C>, Type, R, C, Type[C]>(input) {
+	}
+
+	typedef Type ColumnType[C];
+	ColumnType& operator[](size_t rowIdx) override {
+		return mData[rowIdx];
+	}
+
+	const ColumnType& operator[](size_t rowIdx) const override {
+		return mData[rowIdx];
 	}
 };
 
 template <typename T, size_t A, size_t B, size_t C, typename CR1, typename CR2>
-Matrix<T, A, C> operator*(MatrixBase<CR1, T, A, B>& haha, MatrixBase<CR2, T, B, C>& hoho) {
+Matrix<T, A, C> operator*(MatrixBase<CR1, T, A, B, T[B]>& haha, MatrixBase<CR2, T, B, C, T[C]>& hoho) {
 	Matrix<T, A, C> result;
 	for (size_t i = 0; i < A; ++i) {
 		for (size_t j = 0; j < C; ++j) {
@@ -132,20 +139,36 @@ Matrix<T, A, C> operator*(MatrixBase<CR1, T, A, B>& haha, MatrixBase<CR2, T, B, 
 	return result;
 }
 
+
+// Common functionality for vectors, bivectors and antivectors
+template <typename CRType, typename Type, size_t C>
+struct VectorBase : public MatrixBase<CRType, Type, 1, C, Type> {
+	VectorBase() : MatrixBase<Vector<Type, C>, Type, 1, C, Type>() {}
+	VectorBase(const Type(&input)[1][C]) : MatrixBase<Vector<Type, C>, Type, 1, C, Type>(input) {}
+
+	Type& operator[](size_t rowIdx) override {
+		return mData[0][rowIdx];
+	}
+
+	const Type& operator[](size_t rowIdx) const override {
+		return mData[0][rowIdx];
+	}
+};
+
 // Vector class for better initialization and accessors
 template <typename Type, size_t C>
-struct Vector : public MatrixBase<Vector<Type, C>, Type, 1, C> {
-	Vector() : MatrixBase<Vector<Type, C>, Type, 1, C>() {}
-	Vector(const Type(&input)[1][C]) : MatrixBase<Vector<Type, C>, Type, 1, C>(input) {}
-	Vector(const Type(&input)[C]) : MatrixBase<Vector<Type, C>, Type, 1, C>({ input }) {}
+struct Vector : public VectorBase<Vector<Type, C>, Type, C> {
+	Vector() : VectorBase<Vector<Type, C>, Type, C>() {}
+	Vector(const Type(&input)[1][C]) : VectorBase<Vector<Type, C>, Type, C>(input) {}
+	Vector(const Type(&input)[C]) : VectorBase<Vector<Type, C>, Type, C>(&input) {}
 };
 
 // Bivector class for better initialization and accessors
 template <typename Type, size_t C>
-struct Bivector : public MatrixBase<Vector<Type, C>, Type, 1, C> {
-	Bivector() : MatrixBase<Bivector<Type, C>, Type, 1, C>() {}
-	Bivector(const Type(&input)[1][C]) : MatrixBase<Bivector<Type, C>, Type, 1, C>(input) {}
-	Bivector(const Type(&input)[C]) : MatrixBase<Bivector<Type, C>, Type, 1, C>({ input }) {}
+struct Bivector : public VectorBase<Vector<Type, C>, Type, C> {
+	Bivector() : VectorBase<Bivector<Type, C>, Type, C>() {}
+	Bivector(const Type(&input)[1][C]) : VectorBase<Bivector<Type, C>, Type, C>(input) {}
+	Bivector(const Type(&input)[C]) : VectorBase<Bivector<Type, C>, Type, C>({ input }) {}
 };
 
 
@@ -177,10 +200,10 @@ Vector<Type, C> operator ^(const Vector<Type, C>& left, float right) {
 	return right ^ left;
 }
 
-//template <typename Type, size_t C>
-//Bivector<Type, n_choose_k<C, 2>::value> operator ^(const Vector4& left, const Vector4& right) {
-//	return Bivector<Type, C>{};
-//}
+template <typename Type, size_t C>
+Bivector<Type, n_choose_k<C, 2>::value> operator ^(const Vector4& left, const Vector4& right) {
+	return Bivector<Type, C>{};
+}
 
 /*
 Plucker coordinates (intersection of two planes (wedge of two planes) gives us a line)

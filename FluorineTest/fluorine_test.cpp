@@ -66,8 +66,9 @@ int main(int argc, char* argv[])
 
 	using namespace flumath;
 	//float data[4] = ;	
-	//Vector4 vec({ 1.0, 2,1,2 });
-	//Vector4 result = vec * 3;
+	Vector<float, 4> vec({ 1.0, 2,1,2 });
+	Vector<float, 4> result = vec * 3;
+	std::cout << result[1] << "\n";
 
 	Matrix<float, 2, 2> mat1({ { 3, 4}, { 2, 3} });
 	Matrix<float, 2, 2> mat2({ { 1, 2},{ 1, 4} });
