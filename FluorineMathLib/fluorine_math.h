@@ -160,7 +160,7 @@ template <typename Type, size_t C>
 struct Vector : public VectorBase<Vector<Type, C>, Type, C> {
 	Vector() : VectorBase<Vector<Type, C>, Type, C>() {}
 	Vector(const Type(&input)[1][C]) : VectorBase<Vector<Type, C>, Type, C>(input) {}
-	Vector(const Type(&input)[C]) : VectorBase<Vector<Type, C>, Type, C>(&input) {}
+	Vector(const Type(&input)[C]) : VectorBase<Vector<Type, C>, Type, C>({ input }) {}
 };
 
 // Bivector class for better initialization and accessors
