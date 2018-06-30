@@ -65,14 +65,15 @@ int main(int argc, char* argv[])
 	//printf("%g %g %g %g\n", D[0], D[1], D[2], D[3]);
 
 	using namespace flumath;
-	float data[1][4] = { {1,2} };	
-	Vector4 vec(data);
-	Vector4 result = vec * 3;
+	//float data[4] = ;	
+	//Vector4 vec({ 1.0, 2,1,2 });
+	//Vector4 result = vec * 3;
 
-	Matrix4 mat1({ { 3, 4, 1 }, { 2, 3, 5, 4 } });
-	Matrix4 mat2({ { 1, 2, 1 },{ 1, 4, 1, 4 } });
+	Matrix<float, 2, 2> mat1({ { 3, 4}, { 2, 3} });
+	Matrix<float, 2, 2> mat2({ { 1, 2},{ 1, 4} });
 	
-	Matrix4 mat3 = mat1 * mat2;
+	Matrix<float, 2, 2> mat3 = mat1 * mat2;
+	Matrix4 mat4;
 	std::cout << mat3 << std::endl;
 
 	return 0;

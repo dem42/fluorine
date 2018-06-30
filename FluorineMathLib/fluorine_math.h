@@ -21,6 +21,7 @@ struct Scalar {
 	}
 };
 
+// utilities
 template <typename T>
 constexpr bool check_list0(const std::initializer_list<T>* i, size_t colNum, size_t num) {
 	return (num > 0) ? check_list0(i++, colNum, num - 1) && i->size() == colNum : true;
@@ -29,6 +30,24 @@ template <typename T>
 constexpr bool check_list(size_t size, const std::initializer_list<T>* begin, size_t rowNum, size_t colNum) {	
 	return size == rowNum && check_list0(begin, colNum, rowNum);
 }
+
+template <size_t N>
+struct factorial {
+	static constexpr size_t value = N * factorial<N-1>::value;
+};
+
+template <>
+struct factorial<0> {
+	static constexpr size_t value = 1;
+};
+
+template <size_t N, size_t K>
+struct n_choose_k {
+	static constexpr size_t kn = factorial<K>::value;
+	static constexpr size_t nn = factorial<N>::value;
+	static constexpr size_t zn = factorial<N-K>::value;
+	static constexpr size_t value = nn / (kn * zn);
+};
 
 
 // MatrixBase type using CRTP to facilitate code sharing
@@ -94,12 +113,11 @@ struct MatrixBase {
 
 // Matrix classes and partial specializations
 template <typename Type, size_t R, size_t C>
-struct Matrix : MatrixBase<Matrix<Type, R, C>, Type, R, C> {
-	Matrix() {}
+struct Matrix : public MatrixBase<Matrix<Type, R, C>, Type, R, C> {
+	Matrix() : MatrixBase<Matrix<Type, R, C>, Type, R, C>() {}
 	Matrix(const Type(&input)[R][C]) : MatrixBase<Matrix<Type, R, C>, Type, R, C>(input) {
 	}
 };
-
 
 template <typename T, size_t A, size_t B, size_t C, typename CR1, typename CR2>
 Matrix<T, A, C> operator*(MatrixBase<CR1, T, A, B>& haha, MatrixBase<CR2, T, B, C>& hoho) {
@@ -114,11 +132,30 @@ Matrix<T, A, C> operator*(MatrixBase<CR1, T, A, B>& haha, MatrixBase<CR2, T, B, 
 	return result;
 }
 
+// Vector class for better initialization and accessors
+template <typename Type, size_t C>
+struct Vector : public MatrixBase<Vector<Type, C>, Type, 1, C> {
+	Vector() : MatrixBase<Vector<Type, C>, Type, 1, C>() {}
+	Vector(const Type(&input)[1][C]) : MatrixBase<Vector<Type, C>, Type, 1, C>(input) {}
+	Vector(const Type(&input)[C]) : MatrixBase<Vector<Type, C>, Type, 1, C>({ input }) {}
+};
+
+// Bivector class for better initialization and accessors
+template <typename Type, size_t C>
+struct Bivector : public MatrixBase<Vector<Type, C>, Type, 1, C> {
+	Bivector() : MatrixBase<Bivector<Type, C>, Type, 1, C>() {}
+	Bivector(const Type(&input)[1][C]) : MatrixBase<Bivector<Type, C>, Type, 1, C>(input) {}
+	Bivector(const Type(&input)[C]) : MatrixBase<Bivector<Type, C>, Type, 1, C>({ input }) {}
+};
+
 
 using Matrix4 = Matrix<float, 4, 4>;
+using Matrix2 = Matrix<float, 2, 2>;
 
+/*
 template <typename Type, size_t C>
 using Vector = Matrix<Type, 1, C>;
+*/
 
 using Vector3 = Vector<float, 3>;
 using Vector4 = Vector<float, 4>;
@@ -129,13 +166,22 @@ inline Scalar<float> operator ^(const Scalar<float>& left, const Scalar<float>& 
 	return left.mValue * right.mValue;
 }
 
-inline Vector4 operator ^(const Vector4& left, float right) {
-	return left * right;
+// how is this copying working? our type isnt copyable .. copy elision?
+template <typename Type, size_t C>
+Vector<Type, C> operator ^(float left, const Vector<Type, C>& right) {
+	return right * left;
 }
 
-inline Vector4 operator ^(float left, const Vector4& right) {
+template <typename Type, size_t C>
+Vector<Type, C> operator ^(const Vector<Type, C>& left, float right) {
 	return right ^ left;
 }
+
+//template <typename Type, size_t C>
+//Bivector<Type, n_choose_k<C, 2>::value> operator ^(const Vector4& left, const Vector4& right) {
+//	return Bivector<Type, C>{};
+//}
+
 /*
 Plucker coordinates (intersection of two planes (wedge of two planes) gives us a line)
 plucker respresentation of a line in 3d space
@@ -148,9 +194,8 @@ plucker respresentation of a line in 3d space
 		  = (a1b2 - a2b1)e12 + (a2b3 - a3b2)e23 + (a3b1 - a1b3)e31 + (a4b1 - a1b4)e41 + (a4b2 - a2b4)e42 + (a4b3 - a3b4)e43
 		  // e12,e23,e31,e41,e42,e43 are our 6 basis vectors (note the order of 4-1 vs 1-4 for example is for handedness i think)
 */
-/*Bivector4 operator ^(const Vector4& left, const Vector4& right) {
 
-}*/
+
 
 
 }

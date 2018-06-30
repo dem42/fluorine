@@ -49,5 +49,99 @@ const float TOLERANCE = 1e-6f;
 			Scalarf one = 1.0f;
 			Assert::AreEqual(1.0f, one, TOLERANCE, L"Scalar test", LINE_INFO());
 		}
+
+		TEST_METHOD(TestVectorCreateAndAccess1)
+		{
+			using Scalarf = flumath::Scalar<float>;
+			using Vectorf = flumath::Vector<float, 2>;
+
+			Vectorf v({ { 1.0f, 2.0f } });
+			Assert::AreEqual(1.0f, v[0][0], TOLERANCE, L"Mult test", LINE_INFO());
+			Assert::AreEqual(2.0f, v[0][1], TOLERANCE, L"Mult test", LINE_INFO());
+		}
+
+		TEST_METHOD(TestVectorScalarMultiply1)
+		{
+			using Scalarf = flumath::Scalar<float>;
+			using Vectorf = flumath::Vector<float, 2>;
+
+			Vectorf v({ { 1.0f, 2.0f } });
+			Vectorf result = v * 3.0f;
+			Assert::AreEqual(3.0f, result[0][0], TOLERANCE, L"Mult test", LINE_INFO());
+			Assert::AreEqual(6.0f, result[0][1], TOLERANCE, L"Mult test", LINE_INFO());
+
+			Vectorf v2({ { 3.0f, 1.0f } });
+			result = 2.0f * v2;
+			Assert::AreEqual(6.0f, result[0][0], TOLERANCE, L"Mult test", LINE_INFO());
+			Assert::AreEqual(2.0f, result[0][1], TOLERANCE, L"Mult test", LINE_INFO());
+		}
+
+		TEST_METHOD(TestWedgeProductVectorScalar1)
+		{
+			using Scalarf = flumath::Scalar<float>;
+			using Vectorf = flumath::Vector<float, 2>;
+
+			Vectorf v({ { 1.0f, 2.0f } });
+			Vectorf result1 = 2.0f ^ v;
+			Assert::AreEqual(2.0f, result1[0][0], TOLERANCE, L"Vector-scalar left test", LINE_INFO());
+			Assert::AreEqual(4.0f, result1[0][1], TOLERANCE, L"Vector-scalar left test", LINE_INFO());
+
+			Vectorf result2 = v ^ 3.0f;
+			Assert::AreEqual(3.0f, result2[0][0], TOLERANCE, L"Vector-scalar right test", LINE_INFO());
+			Assert::AreEqual(6.0f, result2[0][1], TOLERANCE, L"Vector-scalar right test", LINE_INFO());
+		}
+
+		/*TEST_METHOD(TestWedgeProductVectorVector1)
+		{
+			using Scalarf = flumath::Scalar<float>;
+			using Vectorf = flumath::Vector<float, 2>;
+
+			Vectorf v({ { 1.0f, 2.0f } });
+			Vectorf result1 = 2.0f ^ v;
+			Assert::AreEqual(2.0f, result1[0][0], TOLERANCE, L"Vector-scalar left test", LINE_INFO());
+			Assert::AreEqual(4.0f, result1[0][1], TOLERANCE, L"Vector-scalar left test", LINE_INFO());
+
+			Vectorf result2 = v ^ 3.0f;
+			Assert::AreEqual(3.0f, result2[0][0], TOLERANCE, L"Vector-scalar right test", LINE_INFO());
+			Assert::AreEqual(6.0f, result2[0][1], TOLERANCE, L"Vector-scalar right test", LINE_INFO());
+		}*/
+
+
+
+		TEST_METHOD(TestFactorialTemplate)
+		{
+			size_t v0 = flumath::factorial<0>::value;
+			size_t v1 = flumath::factorial<1>::value;
+			size_t v2 = flumath::factorial<2>::value;
+			size_t v3 = flumath::factorial<3>::value;
+			size_t v4 = flumath::factorial<4>::value;
+			size_t v5 = flumath::factorial<5>::value;
+
+
+			Assert::AreEqual<size_t>(1, v0, L"fac test 1", LINE_INFO());
+			Assert::AreEqual<size_t>(1, v1, L"fac test 2", LINE_INFO());
+			Assert::AreEqual<size_t>(2, v2, L"fac test 3", LINE_INFO());
+			Assert::AreEqual<size_t>(6, v3, L"fac test 4", LINE_INFO());
+			Assert::AreEqual<size_t>(24, v4, L"fac test 5", LINE_INFO());
+			Assert::AreEqual<size_t>(120, v5, L"fac test 6", LINE_INFO());
+		}
+
+		TEST_METHOD(TestNChooseKTemplate)
+		{
+			size_t v0 = flumath::n_choose_k<5, 0>::value;
+			size_t v1 = flumath::n_choose_k<5, 1>::value;
+			size_t v2 = flumath::n_choose_k<5, 2>::value;
+			size_t v3 = flumath::n_choose_k<5, 3>::value;
+			size_t v4 = flumath::n_choose_k<5, 4>::value;
+			size_t v5 = flumath::n_choose_k<5, 5>::value;
+
+
+			Assert::AreEqual<size_t>(1, v0, L"nk test 1", LINE_INFO());
+			Assert::AreEqual<size_t>(5, v1, L"nk test 2", LINE_INFO());
+			Assert::AreEqual<size_t>(10, v2, L"nk test 3", LINE_INFO());
+			Assert::AreEqual<size_t>(10, v3, L"nk test 4", LINE_INFO());
+			Assert::AreEqual<size_t>(5, v4, L"nk test 5", LINE_INFO());
+			Assert::AreEqual<size_t>(1, v5, L"nk test 6", LINE_INFO());
+		}
 	};
 }
