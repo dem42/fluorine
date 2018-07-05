@@ -4,6 +4,7 @@
 #include <cstring>
 #include <type_traits>
 #include <iostream>
+#include <array>
 
 namespace flumath {
 
@@ -145,6 +146,9 @@ template <typename CRType, typename Type, size_t C>
 struct VectorBase : public MatrixBase<CRType, Type, 1, C, Type> {
 	VectorBase() : MatrixBase<Vector<Type, C>, Type, 1, C, Type>() {}
 	VectorBase(const Type(&input)[1][C]) : MatrixBase<Vector<Type, C>, Type, 1, C, Type>(input) {}
+	VectorBase(const Type(&input)[C]) : MatrixBase<Vector<Type, C>, Type, 1, C, Type>() {
+		memcpy(this->mData, input, C * sizeof(Type));
+	}
 
 	Type& operator[](size_t rowIdx) override {
 		return mData[0][rowIdx];
@@ -160,7 +164,7 @@ template <typename Type, size_t C>
 struct Vector : public VectorBase<Vector<Type, C>, Type, C> {
 	Vector() : VectorBase<Vector<Type, C>, Type, C>() {}
 	Vector(const Type(&input)[1][C]) : VectorBase<Vector<Type, C>, Type, C>(input) {}
-	Vector(const Type(&input)[C]) : VectorBase<Vector<Type, C>, Type, C>({ input }) {}
+	Vector(const Type(&input)[C]) : VectorBase<Vector<Type, C>, Type, C>(input) {}
 };
 
 // Bivector class for better initialization and accessors
@@ -168,7 +172,7 @@ template <typename Type, size_t C>
 struct Bivector : public VectorBase<Vector<Type, C>, Type, C> {
 	Bivector() : VectorBase<Bivector<Type, C>, Type, C>() {}
 	Bivector(const Type(&input)[1][C]) : VectorBase<Bivector<Type, C>, Type, C>(input) {}
-	Bivector(const Type(&input)[C]) : VectorBase<Bivector<Type, C>, Type, C>({ input }) {}
+	Bivector(const Type(&input)[C]) : VectorBase<Vector<Type, C>, Type, C>(input) {}
 };
 
 
