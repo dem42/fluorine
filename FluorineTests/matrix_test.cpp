@@ -91,20 +91,19 @@ const float TOLERANCE = 1e-6f;
 			Assert::AreEqual(6.0f, result2[1], TOLERANCE, L"Vector-scalar right test", LINE_INFO());
 		}
 
-		/*TEST_METHOD(TestWedgeProductVectorVector1)
+		TEST_METHOD(TestWedgeProductVectorVector1)
 		{
 			using Scalarf = flumath::Scalar<float>;
-			using Vectorf = flumath::Vector<float, 2>;
+			using Vectorf = flumath::Vector<float, 3>;
+			using Bivectorf = flumath::Bivector<float, 3>;
 
-			Vectorf v({ { 1.0f, 2.0f } });
-			Vectorf result1 = 2.0f ^ v;
-			Assert::AreEqual(2.0f, result1[0][0], TOLERANCE, L"Vector-scalar left test", LINE_INFO());
-			Assert::AreEqual(4.0f, result1[0][1], TOLERANCE, L"Vector-scalar left test", LINE_INFO());
-
-			Vectorf result2 = v ^ 3.0f;
-			Assert::AreEqual(3.0f, result2[0][0], TOLERANCE, L"Vector-scalar right test", LINE_INFO());
-			Assert::AreEqual(6.0f, result2[0][1], TOLERANCE, L"Vector-scalar right test", LINE_INFO());
-		}*/
+			Vectorf v1({ 1.0f, 2.0f, 3.0f });
+			Vectorf v2({ 4.0f, 1.0f, 2.0f });
+			Bivectorf result = v1 ^ v2;
+			Assert::AreEqual(v1[1] * v2[2] - v1[2] * v2[1], result[0], TOLERANCE, L"Component e23", LINE_INFO());
+			Assert::AreEqual(v1[2] * v2[0] - v1[0] * v2[2], result[1], TOLERANCE, L"Component e31", LINE_INFO());
+			Assert::AreEqual(v1[0] * v2[1] - v1[1] * v2[0], result[2], TOLERANCE, L"Component e12", LINE_INFO());
+		}
 
 
 

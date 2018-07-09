@@ -128,12 +128,12 @@ struct Matrix : public MatrixBase<Matrix<Type, R, C>, Type, R, C, Type[C]> {
 };
 
 template <typename T, size_t A, size_t B, size_t C, typename CR1, typename CR2>
-Matrix<T, A, C> operator*(MatrixBase<CR1, T, A, B, T[B]>& haha, MatrixBase<CR2, T, B, C, T[C]>& hoho) {
+Matrix<T, A, C> operator*(MatrixBase<CR1, T, A, B, T[B]>& left, MatrixBase<CR2, T, B, C, T[C]>& right) {
 	Matrix<T, A, C> result;
 	for (size_t i = 0; i < A; ++i) {
 		for (size_t j = 0; j < C; ++j) {
 			for (size_t k = 0; k < B; ++k) {
-				result[i][j] += haha[i][k] * hoho[k][j];
+				result[i][j] += left[i][k] * right[k][j];
 			}
 		}
 	}
@@ -144,9 +144,9 @@ Matrix<T, A, C> operator*(MatrixBase<CR1, T, A, B, T[B]>& haha, MatrixBase<CR2, 
 // Common functionality for vectors, bivectors and antivectors
 template <typename CRType, typename Type, size_t C>
 struct VectorBase : public MatrixBase<CRType, Type, 1, C, Type> {
-	VectorBase() : MatrixBase<Vector<Type, C>, Type, 1, C, Type>() {}
-	VectorBase(const Type(&input)[1][C]) : MatrixBase<Vector<Type, C>, Type, 1, C, Type>(input) {}
-	VectorBase(const Type(&input)[C]) : MatrixBase<Vector<Type, C>, Type, 1, C, Type>() {
+	VectorBase() : MatrixBase<CRType, Type, 1, C, Type>() {}
+	VectorBase(const Type(&input)[1][C]) : MatrixBase<CRType, Type, 1, C, Type>(input) {}
+	VectorBase(const Type(&input)[C]) : MatrixBase<CRType, Type, 1, C, Type>() {
 		memcpy(this->mData, input, C * sizeof(Type));
 	}
 
@@ -169,20 +169,16 @@ struct Vector : public VectorBase<Vector<Type, C>, Type, C> {
 
 // Bivector class for better initialization and accessors
 template <typename Type, size_t C>
-struct Bivector : public VectorBase<Vector<Type, C>, Type, C> {
+struct Bivector : public VectorBase<Bivector<Type, C>, Type, C> {
 	Bivector() : VectorBase<Bivector<Type, C>, Type, C>() {}
 	Bivector(const Type(&input)[1][C]) : VectorBase<Bivector<Type, C>, Type, C>(input) {}
-	Bivector(const Type(&input)[C]) : VectorBase<Vector<Type, C>, Type, C>(input) {}
+	Bivector(const Type(&input)[C]) : VectorBase<Bivector<Type, C>, Type, C>(input) {}
 };
 
 
 using Matrix4 = Matrix<float, 4, 4>;
 using Matrix2 = Matrix<float, 2, 2>;
 
-/*
-template <typename Type, size_t C>
-using Vector = Matrix<Type, 1, C>;
-*/
 
 using Vector3 = Vector<float, 3>;
 using Vector4 = Vector<float, 4>;
@@ -204,9 +200,19 @@ Vector<Type, C> operator ^(const Vector<Type, C>& left, float right) {
 	return right ^ left;
 }
 
+/*
+* I think this wedge product is right handed (equivalent to cross product in RHS) .. to make it LHS it would be e13 instead of e31 
+* which in implementation i think could be achieved by subtracting to i instead of adding (going left instead of right)
+*/
 template <typename Type, size_t C>
-Bivector<Type, n_choose_k<C, 2>::value> operator ^(const Vector4& left, const Vector4& right) {
-	return Bivector<Type, C>{};
+Bivector<Type, n_choose_k<C, 2>::value> operator ^(const Vector<Type, C>& left, const Vector<Type, C>& right) {
+	Bivector<Type, n_choose_k<C, 2>::value> result;	
+	for (size_t i = 0; i < C; ++i) {
+		size_t idx1 = (i + 1) % C;
+		size_t idx2 = (i + 2) % C;
+		result[i] = left[idx1] * right[idx2] - left[idx2] * right[idx1];		
+	}
+	return result;
 }
 
 /*
