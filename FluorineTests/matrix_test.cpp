@@ -43,6 +43,38 @@ const float TOLERANCE = 1e-6f;
 			Assert::AreEqual(7.0f, result[1][1], TOLERANCE, L"Mult test", LINE_INFO());
 		}
 
+		TEST_METHOD(TestMatrixTranspose1)
+		{
+			using Matrix23 = flumath::Matrix<float, 2, 3>;
+			using Matrix32 = flumath::Matrix<float, 3, 2>;
+
+			Matrix23 mat1({ { 1.0f, 2.0f, 4.0f },{ 3.0f, 5.0f, 6.0f } });
+			Matrix32 result = mat1.T();
+
+			Assert::AreEqual(1.0f, result[0][0], TOLERANCE, L"T 0,0", LINE_INFO());
+			Assert::AreEqual(3.0f, result[0][1], TOLERANCE, L"T 0,1", LINE_INFO());
+
+			Assert::AreEqual(2.0f, result[1][0], TOLERANCE, L"T 1,0", LINE_INFO());
+			Assert::AreEqual(5.0f, result[1][1], TOLERANCE, L"T 1,1", LINE_INFO());
+
+			Assert::AreEqual(4.0f, result[2][0], TOLERANCE, L"T 2,0", LINE_INFO());
+			Assert::AreEqual(6.0f, result[2][1], TOLERANCE, L"T 2,1", LINE_INFO());			
+		}
+
+		TEST_METHOD(TestMatrixTranspose2)
+		{
+			using Matrix2 = flumath::Matrix<float, 2, 2>;			
+
+			Matrix2 mat1({ { 1.0f, 2.0f },{ 3.0f, 4.0f } });
+			Matrix2 result = mat1.T();
+
+			Assert::AreEqual(1.0f, result[0][0], TOLERANCE, L"T 0,0", LINE_INFO());
+			Assert::AreEqual(3.0f, result[0][1], TOLERANCE, L"T 0,1", LINE_INFO());
+
+			Assert::AreEqual(2.0f, result[1][0], TOLERANCE, L"T 1,0", LINE_INFO());
+			Assert::AreEqual(4.0f, result[1][1], TOLERANCE, L"T 1,1", LINE_INFO());
+		}
+
 		TEST_METHOD(TestScalar1)
 		{
 			using Scalarf = flumath::Scalar<float>;

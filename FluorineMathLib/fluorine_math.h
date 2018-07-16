@@ -103,7 +103,7 @@ struct MatrixBase {
 		}
 		return out;
 	}
-
+	
 	/*todo: if these are never accessed through matrix base then they probably don't need to be virtual (better performance?)*/
 	virtual ColType& operator[](size_t rowIdx) = 0;
 
@@ -124,6 +124,16 @@ struct Matrix : public MatrixBase<Matrix<Type, R, C>, Type, R, C, Type[C]> {
 
 	const ColumnType& operator[](size_t rowIdx) const override {
 		return mData[rowIdx];
+	}
+
+	Matrix<Type, C, R> T() {
+		Matrix<Type, C, R> result;
+		for (size_t r = 0; r < R; ++r) {
+			for (size_t c = 0; c < C; ++c) {
+				result[c][r] = mData[r][c];
+			}
+		}
+		return result;
 	}
 };
 
