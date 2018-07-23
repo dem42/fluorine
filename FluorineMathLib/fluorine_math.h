@@ -63,7 +63,7 @@ struct MatrixBase {
 		memcpy(mData, input, R*C * sizeof(Type));
 	}
 	~MatrixBase() {
-		std::cout << "is this getting called?" << std::endl;
+		//std::cout << "is this getting called?" << std::endl;
 	}
 
 	typedef Type type;

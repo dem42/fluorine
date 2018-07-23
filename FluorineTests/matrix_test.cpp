@@ -123,9 +123,9 @@ const float TOLERANCE = 1e-6f;
 			Assert::AreEqual(6.0f, result2[1], TOLERANCE, L"Vector-scalar right test", LINE_INFO());
 		}
 
+			using Scalarf = flumath::Scalar<float>;
 		TEST_METHOD(TestWedgeProductVectorVector1)
 		{
-			using Scalarf = flumath::Scalar<float>;
 			using Vectorf = flumath::Vector<float, 3>;
 			using Bivectorf = flumath::Bivector<float, 3>;
 

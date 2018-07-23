@@ -14,6 +14,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Engine", "Engine\Engine.vcx
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FluorineUnitTests", "FluorineTests\FluorineTests.vcxproj", "{32BCF0F0-2BEF-4A5E-B204-2869820E2F5A}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FluorineBenchmarks", "FluorineBenchmarks\FluorineBenchmarks.vcxproj", "{63DBA2E1-9293-4D87-BD77-D8338D04F74B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -54,6 +56,14 @@ Global
 		{32BCF0F0-2BEF-4A5E-B204-2869820E2F5A}.Release|x64.Build.0 = Release|x64
 		{32BCF0F0-2BEF-4A5E-B204-2869820E2F5A}.Release|x86.ActiveCfg = Release|Win32
 		{32BCF0F0-2BEF-4A5E-B204-2869820E2F5A}.Release|x86.Build.0 = Release|Win32
+		{63DBA2E1-9293-4D87-BD77-D8338D04F74B}.Debug|x64.ActiveCfg = Debug|x64
+		{63DBA2E1-9293-4D87-BD77-D8338D04F74B}.Debug|x64.Build.0 = Debug|x64
+		{63DBA2E1-9293-4D87-BD77-D8338D04F74B}.Debug|x86.ActiveCfg = Debug|Win32
+		{63DBA2E1-9293-4D87-BD77-D8338D04F74B}.Debug|x86.Build.0 = Debug|Win32
+		{63DBA2E1-9293-4D87-BD77-D8338D04F74B}.Release|x64.ActiveCfg = Release|x64
+		{63DBA2E1-9293-4D87-BD77-D8338D04F74B}.Release|x64.Build.0 = Release|x64
+		{63DBA2E1-9293-4D87-BD77-D8338D04F74B}.Release|x86.ActiveCfg = Release|Win32
+		{63DBA2E1-9293-4D87-BD77-D8338D04F74B}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
